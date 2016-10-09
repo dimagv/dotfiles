@@ -45,3 +45,27 @@ let g:syntastic_auto_jump = 0
 let g:rubycomplete_buffer_loading = 1
 let g:rubycomplete_rails = 1
 let g:rubycomplete_classes_in_global = 1
+
+function s:MkNonExDir(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
+endfunction
+augroup BWCCreateDir
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+" RSpec.vim mappings
+"let g:rspec_command = 'call Send_to_Tmux("rspec {spec}\n")'
+let g:rspec_command = "Dispatch rspec {spec}"
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+
+set pastetoggle=<F2>
+filetype indent off
